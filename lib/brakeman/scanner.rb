@@ -2,6 +2,8 @@ require 'rubygems'
 
 begin
   require 'ruby_parser'
+  require 'codeminer'
+  require 'codeminer_sexp'
   require 'ruby_parser/bm_sexp.rb'
   require 'ruby_parser/bm_sexp_processor.rb'
   require 'brakeman/processor'
@@ -297,7 +299,7 @@ class Brakeman::Scanner
   end
 
   def parse_ruby input
-    RubyParser.new.parse input
+    Sexp.convert(CodeMiner.sexp(input, CodeMiner::Formatters::SEXP_FORMATTERS))
   end
 end
 

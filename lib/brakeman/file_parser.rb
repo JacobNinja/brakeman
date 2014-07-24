@@ -32,7 +32,7 @@ module Brakeman
 
     def parse_ruby input, path
       begin
-        RubyParser.new.parse input, path
+        Sexp.convert(CodeMiner.sexp(input, CodeMiner::Formatters::SEXP_FORMATTERS))
       rescue Racc::ParseError => e
         @tracker.error e, "Could not parse #{path}"
         nil

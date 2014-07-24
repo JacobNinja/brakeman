@@ -6,6 +6,14 @@ class Sexp
   attr_accessor :original_line, :or_depth
   ASSIGNMENT_BOOL = [:gasgn, :iasgn, :lasgn, :cvdecl, :cdecl, :or, :and, :colon2]
 
+  def self.convert(codeminer_sexp)
+    if codeminer_sexp
+      new(*codeminer_sexp.to_a.lazy.map {|e| CodeMiner::Sexp === e ? convert(e) : e }).tap do |sexp|
+        sexp.line(codeminer_sexp.line) if codeminer_sexp.src_extract
+      end
+    end
+  end
+
   def method_missing name, *args
     #Brakeman does not use this functionality,
     #so overriding it to raise a NoMethodError.
@@ -44,7 +52,6 @@ class Sexp
   end
 
   def value
-    raise WrongSexpError, "Sexp#value called on multi-item Sexp", caller[1..-1] if size > 2
     last
   end
 
